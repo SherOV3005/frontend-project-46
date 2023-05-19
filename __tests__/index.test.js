@@ -1,21 +1,20 @@
-import { join } from 'path';
-import genDiff from '../src/index.js';
+import { readFileSync } from 'fs';
+import { dirname, join, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import  genDiff from '../src/index.js';
 
-const getFixturePath = (filename) => join('..', '__fixtures__', filename);
-const first =  getFixturePath(file1.json);
-const second = getFixturePath(file2.json);
 
-const expected = `{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}`
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const getFixturePath = (filename) => resolve(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
+//const expected =  readFile(getFixturePath('result.txt'));
+const expected = readFileSync(`${process.cwd()}/__fixtures__/result.txt`,'utf-8')
+const first = `${process.cwd()}/__fixtures__/file1.json`;
+const second =`${process.cwd()}/__fixtures__/file2.json`;
 
 test('difference test', () => {
   expect(genDiff(first, second)).toEqual(expected);
 });
+
 
