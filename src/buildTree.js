@@ -38,7 +38,7 @@ const keys = _.union(Object.keys(data1), Object.keys(data2));
     return `    ${key}: ${data1[key]}`;
   });
 
-  return `{\n${differences.join('\n')}\n}`;
+  return `{\n${differences.join('\n')}\n}\n`;
 };
 
 export default buildTree;
