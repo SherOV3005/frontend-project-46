@@ -21,7 +21,7 @@ test('file json', () => {
   const filename1 = getFixturePath('file1.json');
   const filename2 = getFixturePath('file2.json');
   //const resultname = getFixturePath('result.txt');
-  const result = readFile('result.txt');
+  const result = readFile('resultStylish.txt');
   expect(genDiff(filename1, filename2)).toEqual(result);
 });
 
@@ -29,7 +29,7 @@ test('file yaml', () => {
   const filename1 = getFixturePath('file1.yaml');
   const filename2 = getFixturePath('file2.yaml');
   //const resultname = getFixturePath('result.txt');
-  const result = readFile('result.txt');
+  const result = readFile('resultStylish.txt');
   expect(genDiff(filename1, filename2)).toEqual(result);
 });
 

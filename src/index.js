@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import fs  from 'fs';
 import buildTree from './buildTree.js';
 import parsers from './parse.js';
+import stylish from './stylish.js';
 
   const getFormat = (filepath) => (extname(filepath)).slice(1);
   const getFixturePath = (filepath) => resolve(process.cwd(), filepath);
@@ -17,7 +18,8 @@ import parsers from './parse.js';
   const data1 = parsers(dataFile1, getFormat(filepath1));
   const data2 = parsers(dataFile2, getFormat(filepath2));
   const informationDiff = buildTree(data1, data2);
-return informationDiff;
+  const stylishDiff = stylish(informationDiff, 1);
+  return stylishDiff;
 };
 
 export default genDiff;
