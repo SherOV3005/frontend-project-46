@@ -1,44 +1,48 @@
 import _ from 'lodash';
 
-const buildTree = (data1, data2) => {
-//const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
-//  const resultArr = {};
-//  const result = keys.map((key) => {
-//    if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
-//      resultArr[`+ ${key}`] = data2[key];
-//    }
-//    if (!Object.hasOwn(data2, key) && Object.hasOwn(data1, key)) {
-//      resultArr[`- ${key}`] = data1[key];
-//    }
-//    if ((Object.hasOwn(data2, key) && Object.hasOwn(data1, key))
-//&& !_.isEqual(data1[key], data2[key])) {
-//      resultArr[`- ${key}`] = data1[key];
-//      resultArr[`+ ${key}`] = data2[key];
-//    }
-//    if (_.isEqual(data1[key], data2[key])) {
-//      resultArr[`  ${key}`] = data1[key];
-//    }
-//  });
-//  const str = JSON.stringify(resultArr, null, ' ');
-//  const itogStr = str.replace(/"/gi, '').replace(/,/gi, '');
-//  return (itogStr);
-const keys = _.union(Object.keys(data1), Object.keys(data2));
+const buildTree = (file1, file2) => {
+
+  const keys = _.union(Object.keys(file1), Object.keys(file2));
   const sortedKeys = _.sortBy(keys);
 
-  const differences = sortedKeys.map((key) => {
-    if (!_.has(data1, key)) {
-      return `  + ${key}: ${data2[key]}`;
+  const result = sortedKeys.map((key) => {
+    if (!_.has(file1, key)) {
+      return {
+        name: key,
+        value: file2[key],
+        type: 'added',
+      };
     }
-    if (!_.has(data2, key)) {
-      return `  - ${key}: ${data1[key]}`;
+    if (!_.has(file2, key)) {
+      return {
+        name: key,
+        value: file1[key],
+        type: 'deleted',
+      };
     }
-    if (data1[key] !== data2[key]) {
-      return `  - ${key}: ${data1[key]}\n  + ${key}: ${data2[key]}`;
+    if (_.isObject(file1[key]) && _.isObject(file2[key])) {
+      return {
+        name: key,
+        type: 'nested',
+        children: buildTree(file1[key], file2[key]),
+      };
     }
-    return `    ${key}: ${data1[key]}`;
+    if (file1[key] !== file2[key]) {
+      return {
+        name: key,
+        value1: file1[key],
+        value2: file2[key],
+        type: 'changed',
+      };
+    }
+    return {
+      name: key,
+      value: file1[key],
+      type: 'unchanged',
+    };
   });
-
-  return `{\n${differences.join('\n')}\n}\n`;
+  return result;
 };
 
 export default buildTree;
+
