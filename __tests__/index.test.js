@@ -1,48 +1,28 @@
-import { readFileSync } from 'fs';
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-import  genDiff from '../src/index.js';
 import { test, expect } from '@jest/globals';
-import path from 'path';
+import { readFileSync } from 'fs';
+import { dirname, path } from 'path';
+import { fileURLToPath } from 'url';
+
+import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 
+const resultStylish = readFile('resultStylish.txt').trim();
+const resultPlain = readFile('resultPlain.txt').trim();
+const resultJson = readFile('resultJson.txt').trim();
 
-test('file json', () => {
-  const filename1 = getFixturePath('file1.json');
-  const filename2 = getFixturePath('file2.json');
-  const result = readFile('result.txt').trim();
-  expect(genDiff(filename1, filename2)).toEqual(result);
+const formatsFiles = ['json', 'yaml', 'yml'];
+
+test.each(formatsFiles)('diff formats of files (.json .yaml .yml)', (extension) => {
+  const fileName1 = `${process.cwd()}/__fixtures__/file1.${extension}`;
+  const fileName2 = `${process.cwd()}/__fixtures__/file2.${extension}`;
+
+  expect(genDiff(fileName1, fileName2, 'stylish')).toEqual(resultStylish);
+  expect(genDiff(fileName1, fileName2, 'plain')).toEqual(resultPlain);
+  expect(genDiff(fileName1, fileName2, 'json')).toEqual(resultJson);
+  expect(genDiff(fileName1, fileName2)).toEqual(resultStylish);
 });
-
-test('file yaml', () => {
-  const filename1 = getFixturePath('file1.yaml');
-  const filename2 = getFixturePath('file2.yaml');
-  const result = readFile('result.txt').trim();
-  expect(genDiff(filename1, filename2)).toEqual(result);
-});
-
-test('file1 json', () => {
-  const filename1 = getFixturePath('file3.json');
-  const filename2 = getFixturePath('file4.json');
-  //const resultname = getFixturePath('result.txt');
-  const resultStylish = readFile('resultStylish.txt').trim();
-  expect(genDiff(filename1, filename2)).toEqual(resultStylish);
-});
-
-test('file1 yaml', () => {
-  const filename1 = getFixturePath('file3.yaml');
-  const filename2 = getFixturePath('file4.yaml');
-  //const resultname = getFixturePath('result.txt');
-  const resultStylish = readFile('resultStylish.txt').trim();
-  expect(genDiff(filename1, filename2)).toEqual(resultStylish);
-});
-
-
-
-
-
-

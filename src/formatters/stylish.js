@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-  const createIndent = (level) => {
+const createIndent = (level) => {
   const replacer = '  ';
   const spacesCount = 2;
   const indentSize = level * spacesCount;
@@ -13,7 +13,7 @@ import _ from 'lodash';
   return indents;
 };
 
-  const stringify = (val, depth) => {
+const stringify = (val, depth) => {
   if (!_.isObject(val)) {
     return String(val);
   }
